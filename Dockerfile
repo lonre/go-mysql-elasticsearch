@@ -1,4 +1,4 @@
-FROM golang:1.12-alpine as b
+FROM golang:1.14-alpine as b
 
 MAINTAINER siddontang
 
@@ -9,7 +9,7 @@ WORKDIR /go/src/github.com/siddontang/go-mysql-elasticsearch
 
 RUN GO111MODULE=on go build -o bin/go-mysql-elasticsearch ./cmd/go-mysql-elasticsearch
 
-FROM alpine:3.10
+FROM alpine:3.11
 
 RUN apk add --no-cache tini mariadb-client
 

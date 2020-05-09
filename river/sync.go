@@ -335,11 +335,21 @@ func (r *River) makeReqColumnData(col *schema.TableColumn, value interface{}) in
 	case schema.TYPE_DATETIME, schema.TYPE_TIMESTAMP:
 		switch v := value.(type) {
 		case string:
-			vt, err := time.ParseInLocation(mysql.TimeFormat, string(v), r.c.MyTimezone.Location)
+			sf := "2006-01-02 15:04:05"
+			df := "2006-01-02T15:04:05"
+			switch col.RawType {
+			case "datetime(3)":
+				sf = "2006-01-02 15:04:05.000"
+				df = "2006-01-02T15:04:05.000"
+			case "datetime(6)":
+				sf = "2006-01-02 15:04:05.000000"
+				df = "2006-01-02T15:04:05.000000"
+			}
+			vt, err := time.ParseInLocation(sf, v, r.c.MyTimezone.Location)
 			if err != nil || vt.IsZero() { // failed to parse date or zero date
 				return nil
 			}
-			return vt.Format(time.RFC3339)
+			return vt.Format(df)
 		}
 	case schema.TYPE_DATE:
 		switch v := value.(type) {
